@@ -1848,7 +1848,6 @@ function bindChoices(){
 /* ---------- 结局场景 ---------- */
 function renderEndingScene(scene, coverHtml){
   const wrap = $('#sceneWrap');
-  const hasVideo = !!scene.video;
 
   const contentHtml = `
     <div class="ending-content" id="endingContent">
@@ -1889,45 +1888,6 @@ function renderEndingScene(scene, coverHtml){
     </div>
   `;
 
-  if (hasVideo){
-    wrap.innerHTML = `
-      <div class="ending-wrap">
-        <div class="video-stage">
-          <div class="video-frame">
-            <video id="sceneVideo" src="${scene.video}" playsinline controls preload="metadata"></video>
-            <div class="video-overlay" id="videoOverlay">
-              <button class="video-play-btn" id="videoPlayBtn" aria-label="播放">▶</button>
-            </div>
-          </div>
-        </div>
-        ${contentHtml}
-      </div>
-    `;
-
-    const video = $('#sceneVideo');
-    const overlay = $('#videoOverlay');
-    const content = $('#endingContent');
-    content.style.opacity = '0';
-    content.style.pointerEvents = 'none';
-
-    function playVideo(){
-      overlay.classList.add('hidden');
-      video.play().catch(() => overlay.classList.remove('hidden'));
-    }
-    $('#videoPlayBtn').addEventListener('click', (e) => { e.stopPropagation(); playVideo(); });
-    overlay.addEventListener('click', playVideo);
-    video.addEventListener('ended', () => {
-      content.style.opacity = '1';
-      content.style.pointerEvents = 'auto';
-    });
-    video.addEventListener('error', () => {
-      overlay.classList.add('hidden');
-      content.style.opacity = '1';
-      content.style.pointerEvents = 'auto';
-    });
-
-    bindEndingActions();
-  } else {
     wrap.innerHTML = `
       <div class="ending-wrap">
         ${coverHtml}
@@ -1935,7 +1895,6 @@ function renderEndingScene(scene, coverHtml){
       </div>
     `;
     bindEndingActions();
-  }
 }
 
 function bindEndingActions(){
