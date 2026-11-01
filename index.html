@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FBF6F0">
+<title>GLOW · 用一段短劇，抱抱今天的你</title>
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+:root{
+  --bg:#FBF6F0;
+  --surface:#FFFFFF;
+  --text:#41362F;
+  --text-mid:#6B5D53;
+  --text-soft:#8A7E74;
+  --text-light:#B3A69C;
+  --line:#F2E7DD;
+  --peach:#E9A48C;
+  --peach-deep:#E08B72;
+  --peach-soft:#FBF1E9;
+  --sage:#A9C3B3;
+  --radius:24px;
+  --shadow: 0 18px 40px -24px rgba(160,120,95,.45), 0 2px 8px rgba(160,120,95,.06);
+}
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang HK", "PingFang SC",
+               "Hiragino Sans", "Microsoft JhengHei", "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height:1.65;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+
+body::before,
+body::after{
+  content:'';
+  position:fixed;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  filter: blur(10px);
+}
+body::before{
+  width:70vmax; height:70vmax;
+  top:-32vmax; right:-24vmax;
+  background: radial-gradient(circle, rgba(233,164,140,.30), rgba(233,164,140,0) 68%);
+}
+body::after{
+  width:60vmax; height:60vmax;
+  bottom:-30vmax; left:-22vmax;
+  background: radial-gradient(circle, rgba(169,195,179,.26), rgba(169,195,179,0) 68%);
+}
+
+.app{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 22px; }
+
+.view{ display:none; }
+.view.active{ display:block; }
+
+/* ---------- 品牌 ---------- */
+.brand{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.20em;
+  color:#B98167;
+  text-indent:.20em;
+}
+.brand::before{
+  content:'';
+  width:9px; height:9px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#F0B89C,#E2907A);
+  box-shadow:0 0 0 4px rgba(233,164,140,.18);
+  flex:none;
+}
+
+/* ---------- 语言按钮 ---------- */
+.lang-toggle{
+  font-family:inherit;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.04em;
+  color:#B98167;
+  background:rgba(255,255,255,.8);
+  border:1px solid var(--line);
+  padding:6px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  transition: background .2s, transform .2s;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.lang-toggle:hover{ background:#fff; }
+.lang-toggle:active{ transform:scale(.96); }
+
+/* ---------- 欢迎页 ---------- */
+#welcome.active{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  min-height:100svh;
+  padding:28px 0 60px;
+}
+
+.welcome-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:6px 0 20px;
+}
+
+.welcome-inner{
+  width:100%;
+  max-width:580px;
+  margin:auto;
+  animation: fadeUp .6s cubic-bezier(.2,.8,.3,1) both;
+}
+
+h1.title{
+  font-size: clamp(27px, 6vw, 38px);
+  font-weight:800;
+  line-height:1.32;
+  letter-spacing:-.01em;
+  margin:16px 0 14px;
+  color:var(--text);
+}
+.hl{
+  background: linear-gradient(180deg, transparent 60%, #F7DCCD 60%);
+  padding:0 2px;
+}
+
+.sub{
+  font-size:14.5px;
+  color:var(--text-soft);
+  max-width:450px;
+  line-height:1.78;
+}
+
+/* 平台介绍卡 */
+.intro-card{
+  margin-top:20px;
+  padding:16px 18px;
+  background: rgba(255,255,255,.66);
+  border:1px solid var(--line);
+  border-radius:18px;
+  font-size:13px;
+  color:var(--text-mid);
+  line-height:1.75;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.intro-card strong{ color:#B98167; font-weight:700; }
+.intro-card .sdg{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:8px;
+  font-size:11.5px;
+  color:#8A9E8F;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.intro-card .sdg::before{
+  content:'';
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--sage);
+}
+
+/* 表单 */
+.card{
+  margin-top:24px;
+  padding:24px;
+  background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.field{ margin-bottom:17px; }
+.field:last-child{ margin-bottom:0; }
+
+.field > label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-mid);
+  margin-bottom:9px;
+  letter-spacing:.02em;
+}
+.opt{
+  font-weight:400;
+  font-size:12px;
+  color:var(--text-light);
+  margin-left:5px;
+}
+
+input{
+  width:100%;
+  padding:13px 16px;
+  font-size:15px;
+  font-family:inherit;
+  color:var(--text);
+  background:#FDFAF7;
+  border:1.5px solid #F0E4D9;
+  border-radius:14px;
+  outline:none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  -webkit-appearance:none;
+}
+input::placeholder{ color:#C6BAB0; }
+input:focus{
+  border-color: var(--peach);
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(233,164,140,.14);
+}
+input.invalid{
+  border-color:#E08B72;
+  animation: shake .4s ease;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
+input[type=number]{ -moz-appearance:textfield; }
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:17px;
+}
+.row .field{ margin-bottom:0; }
+
+.chips{ display:flex; flex-wrap:wrap; gap:9px; }
+
+.chip{
+  font-family:inherit;
+  font-size:13.5px;
+  color:#7A6C61;
+  background:#FBF3EC;
+  border:1.5px solid transparent;
+  padding:8px 15px;
+  border-radius:999px;
+  cursor:pointer;
+  transition: background .18s, color .18s, transform .18s, box-shadow .18s;
+  user-select:none;
+  white-space:nowrap;
+}
+.chip:hover{ background:#F7E8DD; }
+.chip:active{ transform:scale(.96); }
+.chip.active{
+  background:linear-gradient(135deg,#F3C5B0,#E9A48C);
+  color:#fff;
+  box-shadow:0 7px 16px -7px rgba(217,139,114,.85);
+}
+
+.hint{
+  min-height:20px;
+  margin-top:2px;
+  font-size:12.5px;
+  color:#D98B72;
+  font-weight:500;
+}
+
+.btn-primary{
+  width:100%;
+  margin-top:6px;
+  padding:15px;
+  font-family:inherit;
+  font-size:15.5px;
+  font-weight:600;
+  letter-spacing:.05em;
+  color:#fff;
+  background:linear-gradient(135deg,#EFA98F,#E08B72);
+  border:none;
+  border-radius:16px;
+  cursor:pointer;
+  box-shadow:0 14px 26px -14px rgba(217,139,114,.95);
+  transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+.btn-primary:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.03);
+  box-shadow:0 18px 32px -14px rgba(217,139,114,1);
+}
+.btn-primary:active{ transform:translateY(1px) scale(.995); }
+
+/* ---------- 首页 ---------- */
+#home.active{
+  display:block;
+  padding:22px 0 80px;
+  animation: fadeUp .5s cubic-bezier(.2,.8,.3,1) both;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:6px 0 22px;
+  gap:12px;
+}
+.topbar-right{ display:flex; align-items:center; gap:9px; }
+
+.user-pill{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 7px 6px 15px;
+  background:rgba(255,255,255,.82);
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:13.5px;
+  color:var(--text-mid);
+  cursor:pointer;
+  transition: box-shadow .2s, transform .2s;
+}
+.user-pill:hover{
+  box-shadow:0 10px 22px -14px rgba(160,120,95,.7);
+  transform:translateY(-1px);
+}
+.avatar{
+  width:29px; height:29px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:13px;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(135deg,#F0B89C,#E2907A);
+  flex:none;
+}
+
+.hero h2{
+  font-size: clamp(22px, 4.6vw, 30px);
+  font-weight:800;
+  letter-spacing:-.01em;
+  color:var(--text);
+}
+.hero p{
+  font-size:14.5px;
+  color:var(--text-soft);
+  margin-top:7px;
+}
+
+.filters{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding:20px 2px 8px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.filters::-webkit-scrollbar{ display:none; }
+.filters .chip{ flex:none; }
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(234px, 1fr));
+  gap:18px;
+  margin-top:16px;
+}
+
+.drama{
+  background:var(--surface);
+  border:1px solid #F5EBE2;
+  border-radius:20px;
+  overflow:hidden;
+  cursor:pointer;
+  box-shadow:0 8px 20px -14px rgba(160,120,95,.55);
+  transition: transform .24s cubic-bezier(.2,.7,.3,1), box-shadow .24s;
+  animation: fadeUp .5s cubic-bezier(.2,.8,.3,1) both;
+  display:flex;
+  flex-direction:column;
+}
+.drama:hover{
+  transform:translateY(-4px);
+  box-shadow:0 24px 36px -20px rgba(160,120,95,.65);
+}
+.drama:active{ transform:translateY(-1px) scale(.99); }
+
+.cover{
+  position:relative;
+  aspect-ratio: 16 / 10;
+  display:grid;
+  place-items:center;
+  flex:none;
+}
+.cover::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at 76% 20%, rgba(255,255,255,.6), transparent 58%);
+  pointer-events:none;
+}
+.cover .emoji{
+  font-size:40px;
+  filter: drop-shadow(0 6px 10px rgba(120,90,70,.16));
+  transform: translateY(1px);
+}
+
+.badge-dur,
+.badge-topic{
+  position:absolute;
+  z-index:1;
+  font-size:11px;
+  letter-spacing:.02em;
+  padding:3px 10px;
+  border-radius:999px;
+  color:#7A6C61;
+  background:rgba(255,255,255,.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.badge-dur{ top:10px; right:10px; }
+.badge-topic{ left:10px; bottom:10px; }
+
+.drama .body{ padding:12px 14px 15px; flex:1; display:flex; flex-direction:column; }
+.drama h3{
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+  line-height:1.45;
+}
+.drama p{
+  font-size:12.5px;
+  color:#9C8F85;
+  line-height:1.6;
+  margin-top:5px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.empty{
+  grid-column:1 / -1;
+  text-align:center;
+  padding:70px 20px;
+  color:var(--text-light);
+  font-size:14px;
+}
+
+/* ---------- 播放器 ---------- */
+#player.active{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  min-height:100svh;
+  padding:18px 0 40px;
+  animation: fadeUp .4s cubic-bezier(.2,.8,.3,1) both;
+}
+
+.player-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:6px 0 18px;
+}
+
+.back-btn{
+  width:38px; height:38px;
+  display:grid;
+  place-items:center;
+  font-size:19px;
+  color:#7A6C61;
+  background:rgba(255,255,255,.85);
+  border:1px solid var(--line);
+  border-radius:50%;
+  cursor:pointer;
+  flex:none;
+  transition: background .2s, transform .2s;
+}
+.back-btn:hover{ background:#fff; }
+.back-btn:active{ transform:scale(.94); }
+
+.player-meta{ flex:1; min-width:0; }
+.player-meta .p-title{
+  font-size:15px;
+  font-weight:700;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.player-meta .p-step{
+  font-size:11.5px;
+  color:var(--text-light);
+  letter-spacing:.03em;
+  margin-top:1px;
+}
+
+.scene-wrap{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  max-width:640px;
+  width:100%;
+  margin:0 auto;
+  padding:8px 0 24px;
+}
+
+/* ---------- 视频舞台（9:16） ---------- */
+.video-stage{
+  display:flex;
+  justify-content:center;
+  margin: 4px 0 18px;
+}
+
+.video-frame{
+  position:relative;
+  height: min(56vh, 580px);
+  max-width: 100%;
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  overflow:hidden;
+  background:#2A2320;
+  box-shadow: 0 18px 40px -24px rgba(0,0,0,.5);
+}
+
+.video-frame video{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+  background:#2A2320;
+}
+
+.video-overlay{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(40,32,28,.32);
+  cursor:pointer;
+  transition: opacity .3s ease, background .2s;
+  z-index:2;
+}
+.video-overlay:hover{ background: rgba(40,32,28,.44); }
+.video-overlay.hidden{ opacity:0; pointer-events:none; }
+
+.video-play-btn{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  border:none;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  color:#fff;
+  background: linear-gradient(135deg,#EFA98F,#E08B72);
+  box-shadow:0 10px 24px -8px rgba(217,139,114,.9);
+  transition: transform .2s;
+  padding-left:4px;
+}
+.video-play-btn:hover{ transform:scale(1.06); }
+.video-play-btn:active{ transform:scale(.96); }
+
+.skip-video{
+  display:block;
+  margin: -4px auto 4px;
+  font-family:inherit;
+  font-size:12.5px;
+  color:#B3A69C;
+  background:none;
+  border:none;
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  padding:6px 10px;
+}
+.skip-video:hover{ color:#B98167; }
+
+/* ---------- 场景文字 ---------- */
+.scene-text{
+  max-width:560px;
+  margin: 0 auto;
+  text-align:center;
+  font-size: clamp(15px, 2.2vw, 17px);
+  line-height:1.85;
+  color:var(--text);
+  letter-spacing:.01em;
+  animation: fadeUp .45s cubic-bezier(.2,.8,.3,1) both;
+}
+.scene-text em{
+  font-style:normal;
+  color:#B98167;
+  font-weight:600;
+}
+
+/* ---------- 选项 ---------- */
+.choices{
+  margin: 18px auto 0;
+  max-width:560px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity .4s ease;
+}
+.choices.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.choice-btn{
+  width:100%;
+  text-align:left;
+  font-family:inherit;
+  font-size:14.5px;
+  line-height:1.55;
+  color:var(--text-mid);
+  background:#fff;
+  border:1.5px solid #F0E4D9;
+  border-radius:16px;
+  padding:15px 18px;
+  cursor:pointer;
+  transition: border-color .2s, background .2s, transform .18s, box-shadow .2s;
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+}
+.choice-btn .idx{
+  flex:none;
+  width:22px; height:22px;
+  display:grid;
+  place-items:center;
+  font-size:11px;
+  font-weight:700;
+  color:#B98167;
+  background:var(--peach-soft);
+  border-radius:50%;
+  margin-top:1px;
+}
+.choice-btn:hover{
+  border-color:#EFC9B8;
+  background:#FFFBF8;
+  transform:translateY(-1px);
+  box-shadow:0 12px 22px -16px rgba(160,120,95,.6);
+}
+.choice-btn:active{ transform:scale(.995); }
+
+/* ---------- 结局 ---------- */
+.ending-wrap{
+  max-width:640px;
+  width:100%;
+  margin:0 auto;
+  padding: 4px 0 20px;
+  animation: fadeUp .5s cubic-bezier(.2,.8,.3,1) both;
+}
+
+.ending-content{
+  transition: opacity .5s ease;
+}
+
+.ending-text{
+  font-size:clamp(15.5px, 2.2vw, 17px);
+  line-height:1.9;
+  color:var(--text);
+  padding:20px 22px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:0 8px 22px -18px rgba(160,120,95,.5);
+  text-align:center;
+}
+
+.section-block{
+  margin-top:18px;
+  padding:20px 22px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:0 8px 22px -18px rgba(160,120,95,.4);
+}
+.section-block .s-label{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.08em;
+  color:#B98167;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.section-block .s-label::before{
+  content:'';
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--peach);
+}
+.section-block p{
+  font-size:14px;
+  line-height:1.8;
+  color:var(--text-mid);
+}
+.section-block ul{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.section-block li{
+  padding-left:0;
+}
+
+.res-link{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid #F6EDE5;
+  text-decoration:none;
+  color:var(--text-mid);
+  font-size:13.5px;
+  transition: color .2s;
+}
+.res-link:last-child{ border-bottom:none; }
+.res-link:hover{ color:#B98167; }
+.res-link .arrow{
+  color:#D9CCC1;
+  font-size:15px;
+  flex:none;
+  transition: transform .2s;
+}
+.res-link:hover .arrow{ transform:translateX(3px); color:#E9A48C; }
+.res-link .r-name{ font-weight:500; }
+.res-link .r-sub{
+  display:block;
+  font-size:11px;
+  color:var(--text-light);
+  margin-top:1px;
+}
+
+.ending-actions{
+  margin-top:24px;
+  display:flex;
+  gap:11px;
+}
+.btn-ghost{
+  flex:1;
+  padding:13px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  color:#9A8B7F;
+  background:#fff;
+  border:1.5px solid #F0E4D9;
+  border-radius:14px;
+  cursor:pointer;
+  transition: background .2s, border-color .2s;
+}
+.btn-ghost:hover{ background:#FFFBF8; border-color:#EFC9B8; }
+.btn-ghost:active{ transform:scale(.99); }
+
+/* ---------- 动画 ---------- */
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+@keyframes shake{
+  0%,100%{ transform:translateX(0); }
+  22%{ transform:translateX(-5px); }
+  44%{ transform:translateX(5px); }
+  66%{ transform:translateX(-3px); }
+  88%{ transform:translateX(3px); }
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:600px){
+  .app{ padding:0 16px; }
+  #welcome.active{ padding:18px 0 48px; }
+  .card{ padding:20px 17px; border-radius:20px; }
+  h1.title{ font-size:26px; margin:14px 0 11px; }
+  .row{ grid-template-columns:1fr; gap:15px; }
+  .grid{
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+    margin-top:14px;
+  }
+  .drama{ border-radius:16px; }
+  .cover .emoji{ font-size:32px; }
+  .drama .body{ padding:10px 11px 13px; }
+  .drama h3{ font-size:13px; }
+  .drama p{ font-size:11px; -webkit-line-clamp:2; }
+  .badge-dur, .badge-topic{ font-size:10px; padding:2px 7px; }
+  .hero h2{ font-size:21px; }
+  .scene-text{ font-size:15px; line-height:1.85; }
+  .choice-btn{ padding:13px 14px; font-size:13.5px; gap:10px; }
+  .section-block{ padding:17px 16px; }
+  .ending-text{ padding:17px 16px; }
+  .ending-actions{ flex-direction:column; }
+  .video-frame{ height: min(58vh, 520px); }
+  .video-play-btn{ width:56px; height:56px; font-size:19px; }
+}
+
+@media (max-width:370px){
+  .grid{ grid-template-columns:1fr; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:.01ms !important;
+    transition-duration:.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ================= 欢迎页 / 设置 ================= -->
+  <section class="view active" id="welcome">
+    <div class="welcome-top">
+      <div class="brand">GLOW</div>
+      <button class="lang-toggle" id="langToggle1">EN</button>
+    </div>
+
+    <div class="welcome-inner">
+      <h1 class="title" id="welcomeTitle"></h1>
+      <p class="sub" id="welcomeSub"></p>
+
+      <div class="intro-card" id="introCard"></div>
+
+      <form class="card" id="setupForm" novalidate>
+        <div class="field">
+          <label for="nickname" id="labelNick"></label>
+          <input id="nickname" type="text" maxlength="12" autocomplete="off">
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="age" id="labelAge"></label>
+            <input id="age" type="number" inputmode="numeric" min="18" max="27" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="realname" id="labelReal"></label>
+            <input id="realname" type="text" maxlength="12" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field">
+          <label id="labelTopics"></label>
+          <div class="chips" id="topicChips"></div>
+        </div>
+
+        <div class="hint" id="hint"></div>
+        <button class="btn-primary" type="submit" id="startBtn"></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= 首页 / 推荐库 ================= -->
+  <section class="view" id="home">
+    <header class="topbar">
+      <div class="brand">GLOW</div>
+      <div class="topbar-right">
+        <button class="lang-toggle" id="langToggle2">EN</button>
+        <div class="user-pill" id="userPill" title="">
+          <span id="pillName"></span>
+          <span class="avatar" id="avatar"></span>
+        </div>
+      </div>
+    </header>
+
+    <div class="hero">
+      <h2 id="greetLine"></h2>
+      <p id="greetSub"></p>
+    </div>
+
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- ================= 播放器 / 结局 ================= -->
+  <section class="view" id="player">
+    <div class="player-top">
+      <button class="back-btn" id="backBtn" aria-label="Back">←</button>
+      <div class="player-meta">
+        <div class="p-title" id="pTitle"></div>
+        <div class="p-step" id="pStep"></div>
+      </div>
+    </div>
+    <div class="scene-wrap" id="sceneWrap"></div>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================
+   1. 数据层
+   ===================================================== */
+
+const TOPICS = [
+  { id:'exam',       zh:'考試壓力', en:'Exam Stress' },
+  { id:'loneliness', zh:'孤獨感',   en:'Loneliness' },
+  { id:'friendship', zh:'友誼問題', en:'Friendship' },
+  { id:'identity',   zh:'自我認同', en:'Self-identity' },
+  { id:'family',     zh:'家庭期望', en:'Family Expectations' },
+  { id:'sleep',      zh:'睡眠困擾', en:'Sleep' }
+];
+
+const RESOURCES = [
+  { zh:'香港大學 CEDARS 輔導及心理培育', en:'HKU CEDARS Counselling & Person Enrichment',
+    sub:'cedars.hku.hk', url:'https://www.cedars.hku.hk/' },
+  { zh:'香港中文大學 學生輔導及發展中心', en:'CUHK Student Counselling & Development Centre',
+    sub:'osad.cuhk.edu.hk', url:'https://www.osad.cuhk.edu.hk/' },
+  { zh:'香港科技大學 學生輔導中心', en:'HKUST Counselling Center',
+    sub:'counseling.hkust.edu.hk', url:'https://counseling.hkust.edu.hk/' },
+  { zh:'香港理工大學 學生事務處', en:'PolyU Student Affairs Office',
+    sub:'polyu.edu.hk/sao', url:'https://www.polyu.edu.hk/sao/' },
+  { zh:'香港城市大學 學生發展處', en:'CityU Student Development Services',
+    sub:'cityu.edu.hk/sds', url:'https://www.cityu.edu.hk/sds/' },
+  { zh:'香港浸會大學 學生事務處', en:'HKBU Student Affairs Office',
+    sub:'sao.hkbu.edu.hk', url:'https://sao.hkbu.edu.hk/' },
+  { zh:'生命熱線', en:'Suicide Prevention Services',
+    sub:'2382 0000', url:'https://www.sps.org.hk/' },
+  { zh:'撒瑪利亞防止自殺會', en:'The Samaritan Befrienders Hong Kong',
+    sub:'2389 2222', url:'https://www.sbhk.org.hk/' },
+  { zh:'醫院管理局 精神健康專線', en:'Hospital Authority Mental Health 24-hour Hotline',
+    sub:'2466 7350', url:'https://www.ha.org.hk/' }
+];
+
+/* -----------------------------------------------------
+   短剧数据
+   —— 只有《一個人的食堂》配了 video 字段
+   —— 其他短剧保持原来的「静态文字 + 选项」模式
+   ----------------------------------------------------- */
+const DRAMAS = [
+
+  /* ========== 1. 考試壓力（无视频，保持原样） ========== */
+  {
+    id:'exam',
+    topic:'exam',
+    duration:'4 min',
+    emoji:'📚',
+    c1:'#F7E4D8', c2:'#E9C4B4',
+    title:{ zh:'考前一晚', en:'The Night Before' },
+    synopsis:{
+      zh:'凌晨一點，圖書館的燈一盞盞熄滅。明天的考試像一座山。',
+      en:'1 AM. The library lights go out one by one. Tomorrow\'s exam feels like a mountain.'
+    },
+    scenes:[
+      {
+        text:{
+          zh:'凌晨一點，圖書館的燈一盞盞熄滅。你的筆記還攤在桌上，明天的考試像一座山壓在胸口。手機螢幕亮著：<em>距離考試還有 8 小時。</em>',
+          en:'1 AM. The library lights go out one by one. Your notes are still open. Tomorrow\'s exam sits on your chest like a mountain. Your phone glows: <em>8 hours until the exam.</em>'
+        },
+        choices:[
+          { zh:'再複習一章，不能輸', en:'Review one more chapter. I can\'t lose.', next:1 },
+          { zh:'合上書，去睡覺', en:'Close the book. Go to sleep.', next:2 },
+          { zh:'打電話給朋友', en:'Call a friend.', next:3 }
+        ]
+      },
+      {
+        text:{
+          zh:'你翻到第三章，但字開始模糊。讀了三遍，還是不知道自己在看什麼。咖啡因讓心跳變快，腦子卻越來越慢。',
+          en:'You turn to chapter three, but the words blur. You read it three times and still don\'t know what you\'re looking at. The caffeine speeds up your heart, but your mind slows down.'
+        },
+        choices:[
+          { zh:'喝咖啡硬撐', en:'Drink more coffee and push through.', next:4 },
+          { zh:'承認累了，去睡覺', en:'Admit you\'re tired. Go to sleep.', next:2 }
+        ]
+      },
+      {
+        text:{
+          zh:'你躺在床上，腦子還在轉。但你沒有強迫自己立刻睡著，只是把手機放遠，慢慢呼吸。',
+          en:'You lie in bed. Your mind is still spinning. But you don\'t force yourself to fall asleep. You just put your phone away and breathe slowly.'
+        },
+        choices:[
+          { zh:'試試 4-7-8 呼吸法', en:'Try the 4-7-8 breathing method.', next:5 },
+          { zh:'聽一首輕音樂', en:'Listen to something soft.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'朋友接了電話。沉默了幾秒，他說：「其實我也很怕明天的考試。」你們都沒有假裝輕鬆。',
+          en:'Your friend picks up. After a pause, he says, "Honestly, I\'m scared of tomorrow too." Neither of you pretends to be fine.'
+        },
+        choices:[
+          { zh:'互相打氣，約定明天見', en:'Encourage each other. Promise to meet tomorrow.', next:5 },
+          { zh:'聊點別的，讓腦子休息一下', en:'Talk about something else. Give your mind a break.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'凌晨三點，你的心跳很快，手在抖。你盯著咖啡杯，突然意識到：這不是你想要的效率。',
+          en:'3 AM. Your heart races. Your hands shake. You stare at the coffee cup and realise: this isn\'t the kind of focus you wanted.'
+        },
+        choices:[
+          { zh:'放下咖啡，去睡覺', en:'Put down the coffee. Go to sleep.', next:2 },
+          { zh:'繼續，再撐一下', en:'Keep going. Just a little longer.', next:5 }
+        ]
+      },
+      {
+        ending:true,
+        text:{
+          zh:'考試那天，你走進考場。你不確定結果，但你知道，你已經做了能做的。分數會來，也會走。而你，會繼續在這裡。',
+          en:'On exam day, you walk into the hall. You don\'t know the result, but you know you\'ve done what you could. Marks come and go. You stay.'
+        },
+        reflection:{
+          zh:'當你感到壓力時，你通常會怎麼照顧自己？有沒有一些方法，是你願意在下次考試前試試看的？',
+          en:'When you feel stressed, how do you usually take care of yourself? Is there one small thing you\'d be willing to try before your next exam?'
+        },
+        tip:{
+          zh:'壓力是身體在告訴你「這件事對我很重要」。它不代表你軟弱，也不代表你會失敗。試著把「我必須做到最好」換成「我會盡力，也允許自己休息」。',
+          en:'Stress is your body\'s way of saying "this matters to me." It doesn\'t mean you\'re weak, and it doesn\'t mean you\'ll fail. Try replacing "I must be perfect" with "I\'ll do my best, and I\'m allowed to rest."'
+        }
+      }
+    ]
+  },
+
+  /* ========== 2. 孤獨感《一個人的食堂》—— 带视频 ========== */
+  {
+    id:'loneliness',
+    topic:'loneliness',
+    duration:'4 min',
+    emoji:'🍜',
+    c1:'#FBEFD9', c2:'#EFD5A8',
+    title:{ zh:'一個人的食堂', en:'Table for One' },
+    synopsis:{
+      zh:'開學第三週。午餐時間，食堂裡人聲鼎沸。你端著餐盤，找不到一個可以坐下的地方。',
+      en:'Week three of term. Lunchtime. The canteen is loud. You hold your tray and can\'t find a place to sit.'
+    },
+    scenes:[
+      /* 场景 0 */
+      {
+        video:'videos/canteen-0.mp4',
+        text:{
+          zh:'開學第三週。午餐時間，食堂裡人聲鼎沸。你端著餐盤，找不到一個可以坐下的地方。每一桌都像已經坐滿了。',
+          en:'Week three of term. Lunchtime. The canteen is loud. You hold your tray and can\'t find a place to sit. Every table looks full.'
+        },
+        choices:[
+          { zh:'找個角落一個人吃', en:'Find a corner and eat alone.', next:1 },
+          { zh:'鼓起勇氣加入一桌同學', en:'Take a breath and join a table.', next:2 },
+          { zh:'打包回宿舍', en:'Pack it up and go back to your room.', next:3 }
+        ]
+      },
+      /* 场景 1 */
+      {
+        video:'videos/canteen-1.mp4',
+        text:{
+          zh:'你坐在窗邊，看著外面的人來人往。一個人吃飯沒什麼不好，但你還是把手機螢幕點亮了三次。',
+          en:'You sit by the window and watch people pass. Eating alone isn\'t bad. But you still light up your phone three times.'
+        },
+        choices:[
+          { zh:'給老朋友發條消息', en:'Message an old friend.', next:4 },
+          { zh:'觀察周圍的人，慢慢吃完', en:'Watch the room. Finish your meal slowly.', next:5 }
+        ]
+      },
+      /* 场景 2 */
+      {
+        video:'videos/canteen-2.mp4',
+        text:{
+          zh:'你走向一桌看起來友善的同學，問：「這裡有人坐嗎？」他們抬頭，笑了笑：「當然沒有，坐吧。」',
+          en:'You walk up to a table of friendly-looking students. "Is anyone sitting here?" They look up and smile. "Nope, sit down."'
+        },
+        choices:[
+          { zh:'主動介紹自己', en:'Introduce yourself.', next:5 },
+          { zh:'安靜地聽他們聊天', en:'Listen quietly to their conversation.', next:4 }
+        ]
+      },
+      /* 场景 3 */
+      {
+        video:'videos/canteen-3.mp4',
+        text:{
+          zh:'你回到宿舍，打開外賣盒。房間很安靜，安靜得能聽見自己的咀嚼聲。',
+          en:'You go back to your room and open the takeaway box. The room is so quiet you can hear yourself chew.'
+        },
+        choices:[
+          { zh:'給家人打個電話', en:'Call your family.', next:4 },
+          { zh:'打開一部劇，假裝有人陪', en:'Put on a show. Pretend someone is there.', next:5 }
+        ]
+      },
+      /* 场景 4 */
+      {
+        video:'videos/canteen-4.mp4',
+        text:{
+          zh:'你發現，孤獨不是因為你身邊沒有人，而是因為你沒有和任何人說真話。你發了一條消息，有人回了你。',
+          en:'You realise loneliness isn\'t about having no one around. It\'s about not saying anything real to anyone. You send a message. Someone replies.'
+        },
+        choices:[
+          { zh:'約對方明天一起吃飯', en:'Ask them to eat together tomorrow.', next:5 }
+        ]
+      },
+      /* 场景 5：结局 */
+      {
+        video:'videos/canteen-5.mp4',
+        ending:true,
+        text:{
+          zh:'一週後，食堂還是那個食堂。但你的手機裡多了幾個名字，你的餐盤旁多了一個影子。孤獨不會一夜消失，但它在慢慢變輕。',
+          en:'A week later, the canteen is still the canteen. But your phone has a few more names, and someone sits beside your tray. Loneliness doesn\'t vanish overnight, but it gets lighter.'
+        },
+        reflection:{
+          zh:'你上一次和別人說「真話」是什麼時候？如果明天有一個人願意聽，你想對他說什麼？',
+          en:'When was the last time you said something real to someone? If someone were willing to listen tomorrow, what would you tell them?'
+        },
+        tip:{
+          zh:'孤獨感很常見，尤其在開學、轉學或生活節奏改變的時候。它不代表你「有問題」，而是提醒你：你需要連結。從一句簡單的「你今天好嗎？」開始，也是一種連結。',
+          en:'Loneliness is common, especially at the start of term, after a move, or when routines change. It doesn\'t mean something is wrong with you. It\'s a signal that you need connection. A simple "How are you today?" is already a start.'
+        }
+      }
+    ]
+  },
+
+  /* ========== 3. 友誼問題（无视频，保持原样） ========== */
+  {
+    id:'friendship',
+    topic:'friendship',
+    duration:'4 min',
+    emoji:'💬',
+    c1:'#F2E7DC', c2:'#DFC9B2',
+    title:{ zh:'群組裡的沉默', en:'Silence in the Group' },
+    synopsis:{
+      zh:'你發現朋友群組裡，有人在傳關於你的八卦。螢幕上的字很小，但每一句都扎得很深。',
+      en:'You find out someone in your friend group has been spreading gossip about you. The words on screen are small, but each one cuts deep.'
+    },
+    scenes:[
+      {
+        text:{
+          zh:'你發現朋友群組裡，有人在傳關於你的八卦。螢幕上的字很小，但每一句都扎得很深。',
+          en:'You find out someone in your friend group has been spreading gossip about you. The words on screen are small, but each one cuts deep.'
+        },
+        choices:[
+          { zh:'直接在群裡問清楚', en:'Ask directly in the group.', next:1 },
+          { zh:'私聊發消息的人', en:'Private-message the person who sent it.', next:2 },
+          { zh:'什麼都不說，退出群組', en:'Say nothing. Leave the group.', next:3 }
+        ]
+      },
+      {
+        text:{
+          zh:'你在群裡打了一段話，又刪掉。最後你發出去：「我看到了，我想知道這是怎麼回事。」群裡安靜了很久。',
+          en:'You type something in the group, then delete it. Finally you send: "I saw it. I want to know what\'s going on." The group goes quiet for a long time.'
+        },
+        choices:[
+          { zh:'等待回應', en:'Wait for a reply.', next:4 },
+          { zh:'補充一句：「我希望我們能好好說」', en:'Add: "I hope we can talk properly."', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'你私聊了那個朋友。他說：「我不是那個意思，只是開玩笑。」你告訴他，這個玩笑讓你不舒服。',
+          en:'You message the friend privately. He says, "I didn\'t mean it that way, it was just a joke." You tell him the joke made you uncomfortable.'
+        },
+        choices:[
+          { zh:'接受道歉，但保持距離', en:'Accept the apology, but keep some distance.', next:5 },
+          { zh:'繼續溝通，說清楚你的感受', en:'Keep talking. Explain how you feel.', next:4 }
+        ]
+      },
+      {
+        text:{
+          zh:'你退出了群組。手機安靜了，但你的腦子沒有。你反覆想著那些話。',
+          en:'You leave the group. Your phone goes quiet, but your mind doesn\'t. You keep replaying the words.'
+        },
+        choices:[
+          { zh:'找信任的朋友聊聊', en:'Talk to a friend you trust.', next:4 },
+          { zh:'一個人消化', en:'Sit with it alone.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'有人私聊你：「你還好嗎？」簡單的四個字，讓你鬆了一口氣。你發現，不是所有人都站在你的對立面。',
+          en:'Someone messages you: "Are you okay?" Four simple words, and you exhale. You realise not everyone is against you.'
+        },
+        choices:[
+          { zh:'回覆：「謝謝，我沒事」', en:'Reply: "Thanks, I\'m okay."', next:5 },
+          { zh:'回覆：「其實不太好」', en:'Reply: "Actually, not really."', next:5 }
+        ]
+      },
+      {
+        ending:true,
+        text:{
+          zh:'幾天後，群組裡的消息恢復了日常。你沒有假裝沒發生過，也沒有讓這件事定義你。你只是知道了，誰值得你留下。',
+          en:'A few days later, the group chat returns to normal. You didn\'t pretend it never happened, and you didn\'t let it define you. You just learned who is worth staying for.'
+        },
+        reflection:{
+          zh:'當友誼讓你受傷時，你通常會選擇沉默還是表達？你希望朋友怎麼對待你的感受？',
+          en:'When a friendship hurts you, do you usually stay silent or speak up? How do you want your friends to treat your feelings?'
+        },
+        tip:{
+          zh:'友誼裡的衝突不代表關係失敗。健康的關係允許不舒服的對話。表達感受時，試著用「我感到…」而不是「你總是…」，會讓對話更容易被聽見。',
+          en:'Conflict in friendship doesn\'t mean the relationship has failed. Healthy relationships allow uncomfortable conversations. Try "I feel…" instead of "You always…" — it makes the conversation easier to hear.'
+        }
+      }
+    ]
+  },
+
+  /* ========== 4. 自我認同（无视频，保持原样） ========== */
+  {
+    id:'identity',
+    topic:'identity',
+    duration:'4 min',
+    emoji:'🪞',
+    c1:'#EFE3EE', c2:'#D6C0D9',
+    title:{ zh:'鏡子', en:'Mirror' },
+    synopsis:{
+      zh:'凌晨兩點，你刷著社交媒體。每個人看起來都過得很好。你放下手機，看見鏡子裡的自己。',
+      en:'2 AM. You scroll through social media. Everyone looks like they\'re doing great. You put down your phone and see yourself in the mirror.'
+    },
+    scenes:[
+      {
+        text:{
+          zh:'凌晨兩點，你刷著社交媒體。每個人看起來都過得很好：旅行、實習、戀愛、成績。你放下手機，看見鏡子裡的自己。',
+          en:'2 AM. You scroll through social media. Everyone looks like they\'re doing great: travel, internships, relationships, grades. You put down your phone and see yourself in the mirror.'
+        },
+        choices:[
+          { zh:'繼續刷，看看別人還發了什麼', en:'Keep scrolling. See what else people posted.', next:1 },
+          { zh:'放下手機，問自己真正想要什麼', en:'Put the phone down. Ask what you actually want.', next:2 },
+          { zh:'發一條真實的動態', en:'Post something honest.', next:3 }
+        ]
+      },
+      {
+        text:{
+          zh:'你越刷越清醒，越刷越低落。那些照片裡的笑容，看起來那麼遠。你意識到，你正在用別人的生活衡量自己。',
+          en:'The more you scroll, the more awake you feel — and the lower you sink. The smiles in those photos look so far away. You realise you\'ve been measuring yourself against other people\'s lives.'
+        },
+        choices:[
+          { zh:'關掉手機，去睡覺', en:'Turn off the phone. Go to sleep.', next:2 },
+          { zh:'繼續刷，直到眼睛發酸', en:'Keep scrolling until your eyes ache.', next:4 }
+        ]
+      },
+      {
+        text:{
+          zh:'你坐在床邊，問自己：「如果沒有人看著我，我想成為什麼樣的人？」這個問題沒有立刻的答案，但你感到一種久違的安靜。',
+          en:'You sit on the edge of your bed and ask: "If no one were watching, who would I want to be?" There\'s no immediate answer, but you feel a quiet you haven\'t felt in a while.'
+        },
+        choices:[
+          { zh:'寫下三個你欣賞自己的地方', en:'Write down three things you appreciate about yourself.', next:5 },
+          { zh:'給未來的自己寫一段話', en:'Write a note to your future self.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'你發了一條不太完美的動態：「最近有點累，但還在努力。」幾分鐘後，有人回覆：「我也是。」',
+          en:'You post something imperfect: "A bit tired lately, but still trying." Minutes later, someone replies: "Me too."'
+        },
+        choices:[
+          { zh:'回覆對方，聊一聊', en:'Reply and talk to them.', next:4 },
+          { zh:'關掉手機，不再看點讚', en:'Put the phone away. Stop checking likes.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'你終於放下手機。窗外天快亮了。你發現，那些讓你焦慮的比較，其實沒有有人在逼你參與。',
+          en:'You finally put the phone down. The sky is almost light. You realise no one is forcing you to take part in the comparison that makes you anxious.'
+        },
+        choices:[
+          { zh:'睡一覺，明天重新開始', en:'Sleep. Start again tomorrow.', next:5 }
+        ]
+      },
+      {
+        ending:true,
+        text:{
+          zh:'第二天，你照鏡子的時候，沒有立刻移開目光。你還是你，不完美，但真實。而真實，已經足夠。',
+          en:'The next day, when you look in the mirror, you don\'t look away immediately. You\'re still you — imperfect, but real. And real is enough.'
+        },
+        reflection:{
+          zh:'你上一次不帶批判地看自己是什麼時候？如果朋友用你對自己的方式說話，你會怎麼回應？',
+          en:'When was the last time you looked at yourself without judgment? If a friend spoke to you the way you speak to yourself, how would you respond?'
+        },
+        tip:{
+          zh:'社交媒體展示的是「精選片段」，不是完整人生。當你感到被比較淹沒時，可以試著限制滑動時間，或問自己：「我真正需要的是什麼？」答案往往不在螢幕裡。',
+          en:'Social media shows highlight reels, not full lives. When comparison overwhelms you, try limiting scroll time or asking: "What do I actually need right now?" The answer is rarely on the screen.'
+        }
+      }
+    ]
+  },
+
+  /* ========== 5. 家庭期望（无视频，保持原样） ========== */
+  {
+    id:'family',
+    topic:'family',
+    duration:'4 min',
+    emoji:'📞',
+    c1:'#E8EFE4', c2:'#C7DCC1',
+    title:{ zh:'電話', en:'The Call' },
+    synopsis:{
+      zh:'週日晚上，媽媽的電話準時打來。「最近成績怎麼樣？畢業後有什麼打算？」',
+      en:'Sunday night. Your mum calls on time. "How are your grades? What are your plans after graduation?"'
+    },
+    scenes:[
+      {
+        text:{
+          zh:'週日晚上，媽媽的電話準時打來。「最近成績怎麼樣？畢業後有什麼打算？」你握著手機，不知道從哪裡開始回答。',
+          en:'Sunday night. Your mum calls on time. "How are your grades? What are your plans after graduation?" You hold the phone and don\'t know where to start.'
+        },
+        choices:[
+          { zh:'如實說，最近有點吃力', en:'Tell the truth: things have been hard lately.', next:1 },
+          { zh:'說「都很好」，讓他們放心', en:'Say "everything\'s fine" so they don\'t worry.', next:2 },
+          { zh:'轉移話題，問問家裡的事', en:'Change the subject. Ask about home.', next:3 }
+        ]
+      },
+      {
+        text:{
+          zh:'你說了實話。電話那頭沉默了幾秒，然後媽媽說：「你怎麼不早點說？」她的聲音裡有關心，也有一點著急。',
+          en:'You tell the truth. The line goes quiet for a few seconds. Then your mum says, "Why didn\'t you tell me earlier?" Her voice holds care — and a little panic.'
+        },
+        choices:[
+          { zh:'告訴她你需要什麼', en:'Tell her what you need.', next:4 },
+          { zh:'說「沒事，我自己能處理」', en:'Say "It\'s fine, I can handle it."', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'你說「都很好」。媽媽放心地聊起了別的事。掛掉電話後，你感到一種奇怪的疲憊。',
+          en:'You say "everything\'s fine." Your mum relaxes and chats about other things. After hanging up, you feel a strange kind of tired.'
+        },
+        choices:[
+          { zh:'給朋友發消息，說說真實感受', en:'Message a friend and say how you really feel.', next:4 },
+          { zh:'一個人消化', en:'Sit with it alone.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'你問起家裡的花、爸爸的腰、妹妹的考試。媽媽的聲音軟了下來。掛電話前，她問：「你呢？」',
+          en:'You ask about the plants at home, your dad\'s back, your sister\'s exams. Your mum\'s voice softens. Before hanging up, she asks: "And you?"'
+        },
+        choices:[
+          { zh:'說「我也挺好的」', en:'Say "I\'m doing okay too."', next:5 },
+          { zh:'說「其實最近有點累」', en:'Say "Actually, I\'ve been a bit tired."', next:4 }
+        ]
+      },
+      {
+        text:{
+          zh:'你發現，說出真實感受並沒有讓事情變糟。家人可能不會立刻理解，但他們開始聽見你。',
+          en:'You realise saying how you feel didn\'t make things worse. Your family might not understand immediately, but they\'ve started to hear you.'
+        },
+        choices:[
+          { zh:'約定下次再聊', en:'Agree to talk again soon.', next:5 }
+        ]
+      },
+      {
+        ending:true,
+        text:{
+          zh:'電話掛斷後，房間裡很安靜。你沒有解決所有問題，但你少背了一點。有些期待需要時間，有些話值得慢慢說。',
+          en:'After the call, the room is quiet. You haven\'t solved everything, but you\'re carrying a little less. Some expectations take time. Some words are worth saying slowly.'
+        },
+        reflection:{
+          zh:'家人的期望和你的意願之間，有沒有一些空間是可以慢慢協商的？你希望他們了解你的哪一部分？',
+          en:'Between your family\'s expectations and your own wishes, is there space to negotiate slowly? What part of yourself do you wish they understood?'
+        },
+        tip:{
+          zh:'家庭期望帶來的壓力很真實。你不必一次說服所有人，也不必完全獨自承擔。試著找到一個你信任的人，先練習說出你的感受，再決定怎麼和家人溝通。',
+          en:'Pressure from family expectations is real. You don\'t have to convince everyone at once, and you don\'t have to carry it alone. Find someone you trust, practise saying how you feel, then decide how to talk to your family.'
+        }
+      }
+    ]
+  },
+
+  /* ========== 6. 睡眠困擾（无视频，保持原样） ========== */
+  {
+    id:'sleep',
+    topic:'sleep',
+    duration:'4 min',
+    emoji:'🌙',
+    c1:'#E4E6F2', c2:'#C3C7E0',
+    title:{ zh:'凌晨三點', en:'3 AM' },
+    synopsis:{
+      zh:'凌晨三點，你躺在床上。腦子像一台停不下來的機器，回放著白天說錯的每一句話。',
+      en:'3 AM. You lie in bed. Your mind is a machine that won\'t stop, replaying every wrong thing you said today.'
+    },
+    scenes:[
+      {
+        text:{
+          zh:'凌晨三點，你躺在床上。腦子像一台停不下來的機器，回放著白天說錯的每一句話、沒做完的每一件事。',
+          en:'3 AM. You lie in bed. Your mind is a machine that won\'t stop, replaying every wrong thing you said today and everything you didn\'t finish.'
+        },
+        choices:[
+          { zh:'繼續躺著，強迫自己睡著', en:'Stay in bed. Force yourself to sleep.', next:1 },
+          { zh:'起床，做點安靜的事', en:'Get up. Do something quiet.', next:2 },
+          { zh:'試試呼吸練習', en:'Try a breathing exercise.', next:3 }
+        ]
+      },
+      {
+        text:{
+          zh:'你越努力睡，越睡不著。時間一分一秒過去，你開始擔心明天會不會沒精神。',
+          en:'The harder you try, the more awake you feel. Minutes pass. You start worrying about how tired you\'ll be tomorrow.'
+        },
+        choices:[
+          { zh:'放棄強迫，接受現在睡不著', en:'Stop forcing it. Accept that you\'re awake right now.', next:2 },
+          { zh:'拿起手機刷一會兒', en:'Pick up your phone and scroll.', next:4 }
+        ]
+      },
+      {
+        text:{
+          zh:'你起來喝了一杯溫水，坐在窗邊。夜很安靜。你沒有逼自己做什麼，只是讓身體慢下來。',
+          en:'You get up, drink a glass of warm water, and sit by the window. The night is quiet. You don\'t force anything. You just let your body slow down.'
+        },
+        choices:[
+          { zh:'寫幾句今天的心情', en:'Write a few lines about today.', next:5 },
+          { zh:'聽一段白噪音', en:'Play some white noise.', next:5 }
+        ]
+      },
+      {
+        text:{
+          zh:'你跟著音頻做 4-7-8 呼吸：吸氣四秒，屏息七秒，呼氣八秒。第三次的時候，你的肩膀鬆了一點。',
+          en:'You follow the audio for 4-7-8 breathing: inhale for four, hold for seven, exhale for eight. By the third round, your shoulders drop a little.'
+        },
+        choices:[
+          { zh:'繼續做到身體放鬆', en:'Keep going until your body relaxes.', next:5 },
+          { zh:'停下來，給自己一點時間', en:'Stop. Give yourself some time.', next:4 }
+        ]
+      },
+      {
+        text:{
+          zh:'手機螢幕的光讓你的腦子更清醒。你意識到，有時候越想控制睡眠，它越會溜走。',
+          en:'The light from your phone makes your mind sharper. You realise that the more you try to control sleep, the more it slips away.'
+        },
+        choices:[
+          { zh:'放下手機，回到床上', en:'Put the phone down. Go back to bed.', next:5 },
+          { zh:'繼續看，直到眼睛累了', en:'Keep scrolling until your eyes get tired.', next:5 }
+        ]
+      },
+      {
+        ending:true,
+        text:{
+          zh:'那一晚，你沒有立刻睡著。但你沒有再和自己打架。天亮的時候，你醒來，發現身體比想像中更懂得照顧你。',
+          en:'That night, you didn\'t fall asleep right away. But you stopped fighting yourself. When morning came, you woke up and found your body knows how to take care of you better than you thought.'
+        },
+        reflection:{
+          zh:'你睡不著的時候，通常會怎麼對待自己？有沒有一些「睡前小儀式」，可以讓身體知道「現在可以休息了」？',
+          en:'When you can\'t sleep, how do you usually treat yourself? Is there a small bedtime ritual that could tell your body "it\'s okay to rest now"?'
+        },
+        tip:{
+          zh:'偶爾睡不好很常見，尤其是在壓力大、作息改變的時候。如果睡不著超過 20 分鐘，可以起身做點安靜的事，等有睡意再回床上。避免在床上滑手機，讓床和睡眠重新建立連結。',
+          en:'Occasional sleeplessness is common, especially during stressful periods or when routines change. If you can\'t sleep for more than 20 minutes, get up and do something quiet until you feel sleepy. Avoid scrolling in bed so your bed stays linked to sleep.'
+        }
+      }
+    ]
+  }
+];
+
+/* =====================================================
+   2. 状态 & 工具
+   ===================================================== */
+const state = {
+  lang: 'zh',
+  nickname: '',
+  age: '',
+  topics: [],
+  filter: 'all',
+  currentDrama: null,
+  currentScene: 0,
+  history: []
+};
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+function T(obj){
+  if (!obj) return '';
+  if (typeof obj === 'string') return obj;
+  return obj[state.lang] || obj.en || obj.zh || '';
+}
+
+function topicLabel(id){
+  const t = TOPICS.find(x => x.id === id);
+  return t ? T(t) : id;
+}
+
+/* =====================================================
+   3. 静态文案
+   ===================================================== */
+const TXT = {
+  welcomeTitle: {
+    zh:'用一段短劇，<br><span class="hl">抱抱</span>今天的你',
+    en:'A short drama to<br><span class="hl">hold</span> today\'s you'
+  },
+  welcomeSub: {
+    zh:'GLOW 是一個為 18–27 歲香港大學生設計的互動式 AI 短劇平台。透過故事選擇，以更間接、更溫柔的方式，陪你認識心理健康。',
+    en:'GLOW is an interactive AI micro-drama platform designed for Hong Kong university students aged 18–27. Through story choices, it walks with you toward mental wellbeing — indirectly and gently.'
+  },
+  intro: {
+    zh:'<strong>關於 GLOW</strong><br>每集 3–5 分鐘，圍繞大學生活中常見的處境：考試壓力、孤獨感、友誼、自我認同等。你可以在關鍵時刻選擇角色的行動，走向不同的場景與結局。每集結束後，我們會提供簡短的反思問題、基礎心理健康資訊，以及經過驗證的大学輔導與專業服務連結。<br><span class="sdg">支持聯合國可持續發展目標 3（良好健康與福祉）與目標 4（優質教育）</span>',
+    en:'<strong>About GLOW</strong><br>Each episode runs 3–5 minutes and centres on situations common to university life: exam stress, loneliness, friendship, self-identity, and more. At key moments, you choose what the character does, leading to different scenes and endings. After each episode, we offer short reflection questions, basic mental health information, and links to verified university counselling and professional services.<br><span class="sdg">Supports UN SDG 3 (Good Health and Well-being) & SDG 4 (Quality Education)</span>'
+  },
+  labelNick: { zh:'用戶名', en:'Nickname' },
+  placeholderNick: { zh:'給自己起個名字，比如「小星星」', en:'Give yourself a name, e.g. "Little Star"' },
+  labelAge: { zh:'年齡', en:'Age' },
+  placeholderAge: { zh:'18–27', en:'18–27' },
+  labelReal: { zh:'姓名<span class="opt">選填</span>', en:'Name<span class="opt">optional</span>' },
+  placeholderReal: { zh:'僅你自己可見', en:'Only visible to you' },
+  labelTopics: { zh:'想聊聊的話題<span class="opt">可多選</span>', en:'Topics you\'d like to explore<span class="opt">multi-select</span>' },
+  startBtn: { zh:'開始探索 →', en:'Start Exploring →' },
+  hintNick: { zh:'給自己起個暱稱吧，它會出現在你的專屬首頁 ✨', en:'Give yourself a nickname — it will appear on your home page ✨' },
+  hintAge: { zh:'請填寫 18–27 之間的年齡，內容會更貼近你', en:'Please enter an age between 18 and 27 so the content fits you better' },
+  hintTopics: { zh:'選一個你最近想聊聊的話題吧 🌱', en:'Pick at least one topic you\'d like to explore 🌱' },
+  greetLine: { zh:'嗨，{name} 👋', en:'Hi, {name} 👋' },
+  greetSub: { zh:'今天想看看哪一種故事？', en:'Which story would you like to step into today?' },
+  filterAll: { zh:'全部', en:'All' },
+  emptyGrid: { zh:'這個話題暫時還沒有內容，換一個看看吧 🌱', en:'Nothing here yet for this topic. Try another one 🌱' },
+  reflectionLabel: { zh:'反思問題', en:'Reflection' },
+  tipLabel: { zh:'心理健康小知識', en:'Wellbeing Tip' },
+  resourcesLabel: { zh:'尋求幫助', en:'Get Support' },
+  resourcesNote: { zh:'以下為香港地區經過驗證的大学輔導及專業服務。如果你需要即時支援，請直接致電熱線。', en:'Verified university counselling and professional services in Hong Kong. If you need immediate support, please call a hotline directly.' },
+  backHome: { zh:'返回推薦庫', en:'Back to Library' },
+  replay: { zh:'重新選擇', en:'Play Again' },
+  back: { zh:'返回', en:'Back' }
+};
+
+/* =====================================================
+   4. 语言切换
+   ===================================================== */
+function applyStaticLang(){
+  $('#welcomeTitle').innerHTML = T(TXT.welcomeTitle);
+  $('#welcomeSub').textContent = T(TXT.welcomeSub);
+  $('#introCard').innerHTML = T(TXT.intro);
+
+  $('#labelNick').innerHTML = T(TXT.labelNick);
+  $('#nickname').placeholder = T(TXT.placeholderNick);
+  $('#labelAge').innerHTML = T(TXT.labelAge);
+  $('#age').placeholder = T(TXT.placeholderAge);
+  $('#labelReal').innerHTML = T(TXT.labelReal);
+  $('#realname').placeholder = T(TXT.placeholderReal);
+  $('#labelTopics').innerHTML = T(TXT.labelTopics);
+  $('#startBtn').textContent = T(TXT.startBtn);
+
+  $('#greetLine').innerHTML = T(TXT.greetLine).replace('{name}', state.nickname || '');
+  $('#greetSub').textContent = T(TXT.greetSub);
+  $('#userPill').title = state.lang === 'zh' ? '點擊修改個人信息' : 'Click to edit your info';
+
+  $$('.lang-toggle').forEach(btn => {
+    btn.textContent = state.lang === 'zh' ? 'EN' : '繁';
+  });
+
+  renderTopicChips();
+  renderFilters();
+  renderGrid();
+
+  // 如果正在播放器页，刷新当前场景
+  if (state.currentDrama && $('#player').classList.contains('active')){
+    renderScene();
+  }
+}
+
+function toggleLang(){
+  state.lang = state.lang === 'zh' ? 'en' : 'zh';
+  applyStaticLang();
+}
+
+$('#langToggle1').addEventListener('click', toggleLang);
+$('#langToggle2').addEventListener('click', toggleLang);
+
+/* =====================================================
+   5. 话题 chips
+   ===================================================== */
+function renderTopicChips(){
+  const el = $('#topicChips');
+  el.innerHTML = TOPICS.map(t => {
+    const active = state.topics.includes(t.id) ? 'active' : '';
+    return `<button type="button" class="chip ${active}" data-topic="${t.id}">${T(t)}</button>`;
+  }).join('');
+}
+
+$('#topicChips').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const id = chip.dataset.topic;
+  const idx = state.topics.indexOf(id);
+  if (idx >= 0){ state.topics.splice(idx, 1); }
+  else { state.topics.push(id); }
+  chip.classList.toggle('active');
+  $('#hint').textContent = '';
+});
+
+/* =====================================================
+   6. 提交表单
+   ===================================================== */
+$('#setupForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const nickEl = $('#nickname');
+  const ageEl = $('#age');
+  const hint = $('#hint');
+
+  const nickname = nickEl.value.trim();
+  const age = ageEl.value.trim();
+  const realname = $('#realname').value.trim();
+
+  nickEl.classList.remove('invalid');
+  ageEl.classList.remove('invalid');
+
+  if (!nickname){
+    hint.textContent = T(TXT.hintNick);
+    nickEl.classList.add('invalid');
+    nickEl.focus();
+    return;
+  }
+  if (!age || Number(age) < 18 || Number(age) > 27){
+    hint.textContent = T(TXT.hintAge);
+    ageEl.classList.add('invalid');
+    ageEl.focus();
+    return;
+  }
+  if (state.topics.length === 0){
+    hint.textContent = T(TXT.hintTopics);
+    return;
+  }
+
+  state.nickname = nickname;
+  state.age = age;
+  state.realname = realname;
+
+  hint.textContent = '';
+  enterHome();
+});
+
+/* =====================================================
+   7. 首页
+   ===================================================== */
+function enterHome(){
+  $('#welcome').classList.remove('active');
+  $('#home').classList.add('active');
+  window.scrollTo({ top: 0 });
+
+  $('#pillName').textContent = state.nickname;
+  $('#greetLine').innerHTML = T(TXT.greetLine).replace('{name}', state.nickname);
+  $('#avatar').textContent = state.nickname.slice(0, 1);
+
+  renderFilters();
+  renderGrid();
+}
+
+$('#userPill').addEventListener('click', () => {
+  $('#home').classList.remove('active');
+  $('#welcome').classList.add('active');
+  window.scrollTo({ top: 0 });
+});
+
+/* =====================================================
+   8. 筛选栏
+   ===================================================== */
+function renderFilters(){
+  const el = $('#filters');
+  const items = [{ id:'all', zh: TXT.filterAll.zh, en: TXT.filterAll.en }, ...TOPICS];
+  el.innerHTML = items.map(t => {
+    const active = state.filter === t.id ? 'active' : '';
+    return `<button class="chip filter-btn ${active}" data-filter="${t.id}">${T(t)}</button>`;
+  }).join('');
+}
+
+$('#filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  state.filter = btn.dataset.filter;
+  renderFilters();
+  renderGrid();
+});
+
+/* =====================================================
+   9. 短剧卡片
+   ===================================================== */
+function renderGrid(){
+  const grid = $('#grid');
+  let list = DRAMAS.slice();
+
+  if (state.filter !== 'all'){
+    list = list.filter(d => d.topic === state.filter);
+  } else {
+    const match = list.filter(d => state.topics.includes(d.topic));
+    const rest  = list.filter(d => !state.topics.includes(d.topic));
+    list = [...match, ...rest];
+  }
+
+  if (list.length === 0){
+    grid.innerHTML = `<div class="empty">${T(TXT.emptyGrid)}</div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map((d, i) => `
+    <article class="drama" data-id="${d.id}" style="animation-delay:${i * 45}ms">
+      <div class="cover" style="background:linear-gradient(140deg, ${d.c1}, ${d.c2})">
+        <span class="emoji">${d.emoji}</span>
+        <span class="badge-dur">${d.duration}</span>
+        <span class="badge-topic">${topicLabel(d.topic)}</span>
+      </div>
+      <div class="body">
+        <h3>${T(d.title)}</h3>
+        <p>${T(d.synopsis)}</p>
+      </div>
+    </article>
+  `).join('');
+}
+
+$('#grid').addEventListener('click', (e) => {
+  const card = e.target.closest('.drama');
+  if (!card) return;
+  startDrama(card.dataset.id);
+});
+
+/* =====================================================
+   10. 播放器
+   ===================================================== */
+function startDrama(id){
+  const d = DRAMAS.find(x => x.id === id);
+  if (!d) return;
+  state.currentDrama = d;
+  state.currentScene = 0;
+  state.history = [];
+
+  $('#home').classList.remove('active');
+  $('#player').classList.add('active');
+  window.scrollTo({ top: 0 });
+
+  $('#pTitle').textContent = T(d.title);
+  renderScene();
+}
+
+$('#backBtn').addEventListener('click', () => {
+  $('#player').classList.remove('active');
+  $('#home').classList.add('active');
+  state.currentDrama = null;
+  window.scrollTo({ top: 0 });
+});
+
+/* ---------- 渲染场景 ---------- */
+function renderScene(){
+  const d = state.currentDrama;
+  if (!d) return;
+  const scene = d.scenes[state.currentScene];
+  if (!scene) return;
+
+  if (scene.ending){
+    $('#pStep').textContent = state.lang === 'zh' ? '結局' : 'Ending';
+  } else {
+    const n = state.currentScene + 1;
+    const total = d.scenes.length - 1;
+    $('#pStep').textContent = state.lang === 'zh'
+      ? `第 ${n} 幕 / ${total}`
+      : `Scene ${n} of ${total}`;
+  }
+
+  const coverHtml = `<div class="scene-cover" style="background:linear-gradient(140deg, ${d.c1}, ${d.c2})">${d.emoji}</div>`;
+
+  if (scene.ending){
+    renderEndingScene(scene, coverHtml);
+  } else {
+    renderNormalScene(scene);
+  }
+}
+
+/* ---------- 普通场景 ---------- */
+function renderNormalScene(scene){
+  const wrap = $('#sceneWrap');
+  const hasVideo = !!scene.video;
+
+  const choicesHtml = (scene.choices || []).map((c, i) => `
+    <button class="choice-btn" data-next="${c.next}">
+      <span class="idx">${i + 1}</span>
+      <span>${T(c)}</span>
+    </button>
+  `).join('');
+
+  if (hasVideo){
+    wrap.innerHTML = `
+      <div class="video-stage">
+        <div class="video-frame">
+          <video id="sceneVideo" src="${scene.video}" playsinline controls preload="metadata"></video>
+          <div class="video-overlay" id="videoOverlay">
+            <button class="video-play-btn" id="videoPlayBtn" aria-label="播放">▶</button>
+          </div>
+        </div>
+      </div>
+      <div class="scene-text">${T(scene.text)}</div>
+      <button class="skip-video" id="skipVideoBtn">${state.lang==='zh'?'跳過視頻 →':'Skip video →'}</button>
+      <div class="choices" id="choiceArea">
+        ${choicesHtml}
+      </div>
+    `;
+    setupVideoScene();
+  } else {
+    wrap.innerHTML = `
+      <div class="scene-text">${T(scene.text)}</div>
+      <div class="choices show" id="choiceArea">
+        ${choicesHtml}
+      </div>
+    `;
+    bindChoices();
+  }
+}
+
+function setupVideoScene(){
+  const video = $('#sceneVideo');
+  const overlay = $('#videoOverlay');
+  const choiceArea = $('#choiceArea');
+  const skipBtn = $('#skipVideoBtn');
+
+  function showChoices(){
+    choiceArea.classList.add('show');
+    if (skipBtn) skipBtn.style.display = 'none';
+  }
+
+  function playVideo(){
+    overlay.classList.add('hidden');
+    const p = video.play();
+    if (p && p.catch){
+      p.catch(() => overlay.classList.remove('hidden'));
+    }
+  }
+
+  $('#videoPlayBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    playVideo();
+  });
+  overlay.addEventListener('click', playVideo);
+
+  video.addEventListener('ended', showChoices);
+  video.addEventListener('error', () => {
+    // 视频未上传或加载失败时，直接显示选项，方便测试流程
+    overlay.classList.add('hidden');
+    showChoices();
+  });
+
+  if (skipBtn){
+    skipBtn.addEventListener('click', showChoices);
+  }
+
+  bindChoices();
+}
+
+function bindChoices(){
+  const choiceArea = $('#choiceArea');
+  if (!choiceArea) return;
+  choiceArea.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = Number(btn.dataset.next);
+      state.history.push(state.currentScene);
+      state.currentScene = next;
+      renderScene();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+/* ---------- 结局场景 ---------- */
+function renderEndingScene(scene, coverHtml){
+  const wrap = $('#sceneWrap');
+  const hasVideo = !!scene.video;
+
+  const contentHtml = `
+    <div class="ending-content" id="endingContent">
+      <div class="ending-text">${T(scene.text)}</div>
+
+      <div class="section-block">
+        <div class="s-label">${T(TXT.reflectionLabel)}</div>
+        <p>${T(scene.reflection)}</p>
+      </div>
+
+      <div class="section-block">
+        <div class="s-label">${T(TXT.tipLabel)}</div>
+        <p>${T(scene.tip)}</p>
+      </div>
+
+      <div class="section-block">
+        <div class="s-label">${T(TXT.resourcesLabel)}</div>
+        <p style="font-size:12.5px;color:#A2958A;margin-bottom:6px;">${T(TXT.resourcesNote)}</p>
+        <ul class="res-list">
+          ${RESOURCES.map(r => `
+            <li>
+              <a class="res-link" href="${r.url}" target="_blank" rel="noopener">
+                <span>
+                  <span class="r-name">${state.lang === 'zh' ? r.zh : r.en}</span>
+                  <span class="r-sub">${r.sub}</span>
+                </span>
+                <span class="arrow">↗</span>
+              </a>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <div class="ending-actions">
+        <button class="btn-ghost" id="btnReplay">${T(TXT.replay)}</button>
+        <button class="btn-primary" id="btnBackHome" style="margin-top:0;">${T(TXT.backHome)}</button>
+      </div>
+    </div>
+  `;
+
+  if (hasVideo){
+    wrap.innerHTML = `
+      <div class="ending-wrap">
+        <div class="video-stage">
+          <div class="video-frame">
+            <video id="sceneVideo" src="${scene.video}" playsinline controls preload="metadata"></video>
+            <div class="video-overlay" id="videoOverlay">
+              <button class="video-play-btn" id="videoPlayBtn" aria-label="播放">▶</button>
+            </div>
+          </div>
+        </div>
+        ${contentHtml}
+      </div>
+    `;
+
+    const video = $('#sceneVideo');
+    const overlay = $('#videoOverlay');
+    const content = $('#endingContent');
+    content.style.opacity = '0';
+    content.style.pointerEvents = 'none';
+
+    function playVideo(){
+      overlay.classList.add('hidden');
+      video.play().catch(() => overlay.classList.remove('hidden'));
+    }
+    $('#videoPlayBtn').addEventListener('click', (e) => { e.stopPropagation(); playVideo(); });
+    overlay.addEventListener('click', playVideo);
+    video.addEventListener('ended', () => {
+      content.style.opacity = '1';
+      content.style.pointerEvents = 'auto';
+    });
+    video.addEventListener('error', () => {
+      overlay.classList.add('hidden');
+      content.style.opacity = '1';
+      content.style.pointerEvents = 'auto';
+    });
+
+    bindEndingActions();
+  } else {
+    wrap.innerHTML = `
+      <div class="ending-wrap">
+        ${coverHtml}
+        ${contentHtml}
+      </div>
+    `;
+    bindEndingActions();
+  }
+}
+
+function bindEndingActions(){
+  $('#btnReplay').addEventListener('click', () => {
+    state.currentScene = 0;
+    renderScene();
+    window.scrollTo({ top: 0 });
+  });
+  $('#btnBackHome').addEventListener('click', () => {
+    $('#player').classList.remove('active');
+    $('#home').classList.add('active');
+    state.currentDrama = null;
+    window.scrollTo({ top: 0 });
+  });
+}
+
+/* =====================================================
+   11. 初始化
+   ===================================================== */
+function init(){
+  state.lang = 'zh';
+  applyStaticLang();
+}
+
+init();
+</script>
+</body>
+</html>
